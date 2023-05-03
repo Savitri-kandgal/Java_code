@@ -1,0 +1,165 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Temple registration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+
+</head>
+<body>
+<h2>Temple Registration</h2>
+
+<form class="form-inline" action="register.do" method="post">
+<br>
+<table class="container-fluid">
+	<thead>				
+		<tr>				
+			<th colspan ="2">
+			<h4><mark>Personal Information</mark></h4>
+			</th>			
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+ 			 <label for="name" class="row example mb-3">Name:</label>
+			</td>
+			<td>
+  			<input type="text" class="form-control" id="name" name="name" placeholder="Enter Name">
+			</td>	
+		</tr>
+
+		<tr>
+			<td>
+			<label for="age">Age:</label>
+			</td>
+			<td>
+			<input type="text" class="form-control" name="age" id="age" placeholder="Enter Age"></div>
+			</td>
+		</tr>
+
+		<tr>
+			<td>	
+			<label for="address">Address:</label>
+			</td>
+			<td>		
+			<textarea rows="4" cols="70" class="form-control" name="address" placeholder="Enter Address"></textarea>  
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+
+			<label for="cnumber">Contact number</label>
+			</td>
+			<td>
+			<input type="text" name="phoneNumber" class="form-control" id="cnumber" placeholder="Enter Contact number"></div>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+			<label for="eadd">Email Address</label>
+			</td>
+			<td>
+			<input type="text" name="emailAddress" class="form-control"  id="eadd" placeholder="Enter Email Address"><br></div>
+			</td>
+		</tr>
+
+		<tr>
+			<td>	
+			<label>Date</label>
+			</td>
+			<td>
+			<input type="text" name="date" class="form-control"  id="date" placeholder="Enter date" onblur="getValue()"></div>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+			<label>No Of People</label>
+			</td>
+			<td>
+			<input type="text" name="noOfPeople" class="form-control"  id="people" placeholder="Enter No Of People">
+			</td>
+		</tr>
+
+<br>
+		
+		<tr>				
+			<th colspan ="2">
+			<h4><mark>Visiting Information</mark></h4>
+			</th>			
+		</tr>
+		<tr>
+			<td>
+			<label>Special Entrance </label>
+			<select name="seLt" class="form-control">
+			<c:forEach items="${seLt}" var="sedata">
+			<option value="${sedata.propValue}">${sedata.propName}</option>
+			</c:forEach>
+			</select>
+			</td>
+		</tr>
+	
+		<tr>
+			<td>
+			<label>Prasadha </label>
+			<select name="prLt" class="form-control">
+			<c:forEach items="${prLt}" var="prdata">
+			<option value="${prdata.propValue}">${prdata.propName}</option>
+			</c:forEach>
+			</select>
+			</td>
+		</tr>
+	
+		<tr>
+			<td>
+			<label>Pooja Type </label>
+			<select name="ptLt" class="form-control">
+			<c:forEach items="${ptLt}" var="ptdata">
+			<option value="${ptdata.propValue}">${ptdata.propName}</option>
+			</c:forEach>
+			</select>
+			</td>
+		</tr>
+	
+		<tr>
+			<td>
+			<label>ID Card </label>
+			<select name="idLt" class="form-control">
+			<c:forEach items="${idLt}" var="iddata">
+			<option value="${iddata.propValue}">${iddata.propName}</option>
+			</c:forEach>
+			</select>
+			</td>
+		</tr>
+	
+		<tr>
+			<td>
+			<label>ID Number</label>
+			<input type="text" name="idNumber" class="form-control" id="id" placeholder="Enter ID number"></div>
+			</td>
+		</tr>
+	
+		<tr>
+			<td colspan ="2">
+			<button type="submit" class="btn btn-success">Register</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+			</td>
+		</tr>
+	</tbody>
+</form>
+
+	${error}
+</body>
+</html>
