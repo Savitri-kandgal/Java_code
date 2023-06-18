@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>X-workz</title>
+<title>X-wrokz</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -40,30 +41,35 @@
 }
 </style>
 </head>
-<body style="background-color:papayawhip;">
+<body>
 	<nav class="navbar navbar-inverse">
 			<div class="container-fluid">
 			<div class="navbar-header">
 				<p class="navbar-text" style="color: white; font-size: 20px;">X-Workz</p>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
-			<li><a href="ImageDispaly.jsp"><span class="glyphicon glyphicon-list-alt"></span>Download-Files</a></li>
-			<li><a href="displayList"><span class="glyphicon glyphicon-list-alt"></span>View-Data</a></li>
-			<li><a href="Landing.jsp"><span class="glyphicon glyphicon-user"></span>Home</a></li>
+				<li><a href="Landing.jsp"><span
+						class="glyphicon glyphicon-user"></span>Home</a></li>
 			</ul>
 		</div>
 	</nav>
-<h3 style="color:mediumvioletred;">Welcome to Contact Info application:</h3>
-<pre>
-<a href="start">register</a>
-<a href="displayList">View-Data</a>
-<a href="Update.jsp">Update</a>
-<a href="Delete.jsp">Delete</a>
-</pre>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<div class="footer">
-	<small>@ 2023 Copyright &copy; xworkz.com</small>
- <p> <a href="ContactDetails.jsp">Contact Details</a><p>
+<div align="center">
+<h3 style="color:lawngreen;">Contact List:</h3>
+<table border="2" cellpadding="10">
+<tr style="color:hotpink;">
+<th>Name</th><th>Email-Id</th><th>Mobile_No</th><th>Comment</th><th>File</th>
+</tr>
+<c:forEach items="${list}" var="dto">
+<tr style="color:mediumturquoise;">
+<td>${dto.name}</td>
+<td>${dto.email}</td>
+<td>${dto.mobileNo}</td>
+<td>${dto.comments}</td>
+<td><a target="_blank" href="showFile?fileName=${dto.fileName}&contentType=${dto.contentType}">${dto.originalFileName}</a></td>
+</tr>
+</c:forEach>
+</table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

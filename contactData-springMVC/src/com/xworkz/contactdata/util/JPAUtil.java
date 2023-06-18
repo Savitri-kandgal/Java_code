@@ -5,12 +5,14 @@ import javax.persistence.Persistence;
 
 public class JPAUtil {
 
-	private static EntityManagerFactory factory=null;
+	private static EntityManagerFactory factory;
 	
-	public static EntityManagerFactory factory() {
+	public static EntityManagerFactory getFactory() {
 		return factory;
 	}
+	
 	static {
-		factory=Persistence.createEntityManagerFactory("contactData");
+		factory=Persistence.createEntityManagerFactory("xworkz");
 	}
+
 }

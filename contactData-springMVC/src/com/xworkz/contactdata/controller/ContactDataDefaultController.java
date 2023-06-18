@@ -21,6 +21,7 @@ public class ContactDataDefaultController {
 		System.out.println("running onStart()");
 		model.addAttribute("dto", new ContactDataDTO());
 		return "Register";
+	//	return "Testing";
 	}
 }
 
