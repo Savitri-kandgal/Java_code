@@ -1,22 +1,14 @@
 package com.xworkz.parkingrental.service;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.parkingrental.dto.ParkingDTO;
@@ -69,7 +61,7 @@ public class ParkingServiceImpl implements ParkingService {
 
 					// updating time in db
 					entity.setLoginTime(formattedDate);
-					boolean timeUpdated = repo.updateLoginTime(entity);
+					repo.updateLoginTime(entity);
 
 					// getting entity with login-time
 					ParkingEntity entity2 = repo.findByEmail(email);
@@ -169,37 +161,23 @@ public class ParkingServiceImpl implements ParkingService {
 			log.info("validateAndRegister: userDto: " + userDto);
 			UserEntity userEntity = new UserEntity();
 			BeanUtils.copyProperties(userDto, userEntity);
-			boolean saved = repo.saveUserData(userEntity);
+			repo.saveUserData(userEntity);
 
 			UserParkingEntity upEntity = new UserParkingEntity();
 			UserEntity userByEmail = repo.findByUserEmail(userDto.getEmail());
 			upDto.setUserId(userByEmail.getId());
+			upDto.setCreatedDate(formattedDate);
+			upDto.setUpdatedDate(formattedDate);
+			
 			BeanUtils.copyProperties(upDto, upEntity);
+			upEntity.setActive(true);
+			
 			repo.saveUserParkingInfo(upEntity);
 			userParkingEmail.sendMail(userDto.getEmail(), userDto.getName(), upDto);
 			return true;
 		}
 		return false;
 	}
-
-	/*
-	 * public boolean generateOtp(String email) { log.info("running generateOtp()");
-	 * UserEntity entity = repo.findByUserEmail(email); if(entity!=null) { int otp =
-	 * GenerateOTP.generateOtp(); // generated otp
-	 * 
-	 * SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
-	 * String formattedDate = dateFormat.format(new Date());
-	 * log.info("service: generateOtp: formattedDate: "+formattedDate);
-	 * 
-	 * entity.setOtp(otp); entity.setUpdatedDate(formattedDate);
-	 * 
-	 * if (repo.saveOtp(entity) && userOTPMail.sendMail(email, entity.getName(),
-	 * otp)) // to save otp & send email {
-	 * log.info("otp generated & sent to registered email"); return true; }
-	 * log.info("otp not generated & sent to registered email"); return false; }
-	 * log.info("service: generateOtp(): entity is not found by email"); return
-	 * false; }
-	 */
 
 	public boolean generateOtp(String email) 
 	{
@@ -217,7 +195,7 @@ public class ParkingServiceImpl implements ParkingService {
 		entity.setOtp(otp);
 		entity.setOtpCount(0);
 		entity.setAcctStatus("Active");
-		entity.setOtpExpiryTime(LocalTime.now().plusSeconds(60));
+		entity.setOtpExpiryTime(LocalTime.now().plusSeconds(120));
 
 		if (repo.updateUserEntity(entity) && userOTPMail.sendMail(email, entity.getName(), otp))																							// send email
 		{
@@ -270,11 +248,11 @@ public class ParkingServiceImpl implements ParkingService {
 		return null;
 	}	
 
-	public List<UserParkingDTO> findUserParkingDtoById(String email) {				
-		log.info("running findUserParkingDtoById()");
+	public List<UserParkingDTO> findAllById(String email) {				
+		log.info("running findAllById()");
 		UserEntity userEntity = repo.findByUserEmail(email);
-		List<UserParkingEntity> upEntities = repo.findParkingEntitiesByUserId(userEntity.getId());
-		log.info("service: findUserParkingDtoById: upList: " + upEntities);
+		List<UserParkingEntity> upEntities = repo.findAllByUserId(userEntity.getId());
+		log.info("service: findAllById: upList: " + upEntities);
 		if (!upEntities.isEmpty()) {
 			List<UserParkingDTO> upDtos = upEntities.stream().map(entity -> {
 				UserParkingDTO upDto = new UserParkingDTO();
@@ -297,19 +275,67 @@ public class ParkingServiceImpl implements ParkingService {
 		return null;
 	}
 
-	public boolean addUserParkingInfo(UserParkingDTO uParkingDto, String email) {
+	public boolean addUserParkingInfo(UserParkingDTO upDto, String email) {
 		log.info("running addUserParkingInfo()");
 		UserEntity entityByEmail = repo.findByUserEmail(email);
 		if (entityByEmail != null) {
 			log.info("entityByEmail is not null");
-			uParkingDto.setUserId(entityByEmail.getId());
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+			String formattedDate = dateFormat.format(new Date());
+			
+			upDto.setUserId(entityByEmail.getId());
+			upDto.setCreatedDate(formattedDate);
+			upDto.setUpdatedDate(formattedDate);
+			
 			UserParkingEntity upEntity = new UserParkingEntity();
-			BeanUtils.copyProperties(uParkingDto, upEntity);
+			BeanUtils.copyProperties(upDto, upEntity);
+			upEntity.setActive(true);
 			repo.saveUserParkingInfo(upEntity);
-			userParkingEmail.sendMail(email, entityByEmail.getName(), uParkingDto);
+			userParkingEmail.sendMail(email, entityByEmail.getName(), upDto);
 			return true;
 		}
 		log.info("entityByEmail is not null");
 		return false;
+	}
+	
+	public boolean updateUserParkingInfo(UserParkingDTO upDto, String vNo) {
+		log.info("service: running updateUserParkingInfo()");
+		 UserParkingEntity entity = repo.findByVehicleNo(vNo);
+		if (entity != null) {
+			log.info("entity is not null");
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+			String formattedDate = dateFormat.format(new Date());
+			
+			upDto.setUserId(entity.getId());
+			upDto.setCreatedDate(entity.getCreatedDate());
+			upDto.setUpdatedDate(formattedDate);
+			upDto.setActive(entity.isActive());
+			
+			UserParkingEntity upEntity = new UserParkingEntity();
+			BeanUtils.copyProperties(upDto, upEntity);
+	
+			repo.saveUserParkingInfo(upEntity);
+		
+		//	userParkingEmail.sendMail(email, entityByEmail.getName(), upDto);
+			return true;
+		}
+		log.info("entityByEmail is not null");
+		return false;
+	}
+	
+	public boolean deleteUserParkingEntityByVehicleNo(String vehicleNo) {
+		log.info("running deleteUserParkingEntityByVehicleNo()");
+	//	UserParkingEntity entity = repo.findByVehicleNo(vehicleNo);
+	//	if(entity!=null) {
+			 if(repo.deleteUserParkingEntity(vehicleNo)) {
+					log.info("deleteUserParkingEntityByVehicleNo(): entity deleted");
+				 return true;
+		}else {
+			log.info("deleteUserParkingEntityByVehicleNo(): entity not deleted");
+			return false;
+		}
+		
 	}
 }

@@ -1,16 +1,11 @@
 package com.xworkz.parkingrental.entity;
 
 import java.time.LocalTime;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.CollectionId;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,33 +25,39 @@ import lombok.extern.slf4j.Slf4j;
 public class UserEntity {
 	
 	@Id
+	@Column(name = "ID")
 	private int id;
+	@Column(name = "NAME")
 	private String name;
+	
+	@Column(name = "EMAIL_ID")
 	private String email;
+	
+	@Column(name = "CONTACT_NO")
 	private long phoneNo;
 	
-	@Column(name = "CreatedBy")
+	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
-	@Column(name = "CreatedDate")
+	@Column(name = "CREATED_DATE")
 	private String createdDate;
 	
-	@Column(name = "UpdatedBy")
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@Column(name = "UpdatedDate")
+	@Column(name = "UPDATE_DATE")
 	private String updatedDate;
 	
 	@Column(name = "OTP")
 	private Integer otp;
 
-	@Column(name = "OTP_Count")
+	@Column(name = "COUNT")
 	private int otpCount;
 	
-	@Column(name = "Acct_Status")
+	@Column(name = "STATUS")
 	private String AcctStatus; 
 	
-	@Column(name = "OTP_Expiry_Time")
+	@Column(name = "EXPIRE_ON")
 	private LocalTime otpExpiryTime;
 	
 	public UserEntity() {

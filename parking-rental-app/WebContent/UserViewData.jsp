@@ -36,7 +36,7 @@
 }
 </style>
 </head>
-<body Style="margin-top:5%;margin-bottom:5%;margin-left:-4%;">
+<body Style="margin-top:5%;margin-bottom:5%;margin-left: 3%;">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -57,69 +57,87 @@
 			</div>
 		</div>
 	</nav>
-<div class="card-body" style="margin-top:-10%;margin-left: 0%;margin-right: 0%;"> <!-- background-color:pink; -->
-<div class="row" style="margin-left:-13%;margin-top: 0%;margin-bottom: 40px;"> <!-- background-color:yellow; -->
-<table class="table w-auto table-bordered" style="margin-left: 21%;margin-right: -10%;">
-<thead style="text-align: center;"> <!-- class="table-dark" -->
-<tr>
-<!-- <th scope="col">#</th> -->
-<th scope="col" style="background-color: turquoise;">Name</th>
-<th scope="col" style="background-color: turquoise;">Email</th>
-<th scope="col" style="background-color: turquoise;">PhoneNo</th>
-<th scope="col" style="background-color: turquoise;">CreatedBy</th>
-<th scope="col" style="background-color: turquoise;">CreatedDate</th>
-<th scope="col" style="background-color: turquoise;">UpdatedBy</th>
-<th scope="col" style="background-color: turquoise;">UpdatedDate</th>
-</tr>
-  </thead>
-<tbody style="text-align: center;">
-<tr>
-<!-- <th scope="row"></th> -->
-<td>${personalData.name}</td>
-<td>${personalData.email}</td>
-<td>${personalData.phoneNo}</td>
-<td>${personalData.createdBy}</td>
-<td>${personalData.createdDate}</td>
-<td>${personalData.updatedBy}</td>
-<td>${personalData.updatedDate}</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="row" style="margin-left:-10%;">
-<table class="table w-auto table-bordered" style="margin-left: 21%;margin-right: -10%;">
-<thead> <!-- class="table-dark" -->
-<tr style="text-align: center;">
-<!-- <th scope="col">#</th> -->
-<th scope="col" style="background-color: turquoise;">Location</th>
-<th scope="col" style="background-color: turquoise;">Vehicle No.</th>
-<th scope="col" style="background-color: turquoise;">Vehicle-Type</th>
-<th scope="col" style="background-color: turquoise;">Engine-Type</th>
-<th scope="col" style="background-color: turquoise;">Classification</th>
-<th scope="col" style="background-color: turquoise;">Term</th>
-<th scope="col" style="background-color: turquoise;">Price</th>
-<th scope="col" style="background-color: turquoise;">Discount</th>
-<th scope="col" style="background-color: turquoise;">Total-Amount</th>
-</tr>
-  </thead>
-<tbody style="text-align: center;">
-<c:forEach items="${parkingData}" var="dto">
-<tr>
-<!-- <th scope="row"></th> -->
-<td>${dto.location}</td>
-<td>${dto.vehicleNo}</td>
-<td>${dto.vehicleType}</td>
-<td>${dto.engineType}</td>
-<td>${dto.classification}</td>
-<td>${dto.term}</td>
-<td>${dto.price}</td>
-<td>${dto.discount}</td>
-<td>${dto.totalAmount}</td>
-</tr>
-</c:forEach>
-</tbody>
-</table>
-</div>
+	
+<div class="card-body" style="margin-top:-10%;"> <!-- background-color:pink; -->
+	<div class="row">
+	<span style="margin-left:16.2%;color: blue"><b>Profile</b></span>
+		<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
+			<thead style="text-align: center;font-size: 12px;">
+				<tr>
+				<th scope="col" style="background-color: turquoise;">Name</th>
+				<th scope="col" style="background-color: turquoise;">Email</th>
+				<th scope="col" style="background-color: turquoise;">PhoneNo</th>
+				<th scope="col" style="background-color: turquoise;">CreatedBy</th>
+				<th scope="col" style="background-color: turquoise;">CreatedDate</th>
+				<th scope="col" style="background-color: turquoise;">UpdatedBy</th>
+				<th scope="col" style="background-color: turquoise;">UpdatedDate</th>
+				</tr>
+			</thead>
+			<tbody style="text-align: center;font-size: 12px;">
+				<tr>
+				<td>${personalData.name}</td>
+				<td>${personalData.email}</td>
+				<td>${personalData.phoneNo}</td>
+				<td>${personalData.createdBy}</td>
+				<td>${personalData.createdDate}</td>
+				<td>${personalData.updatedBy}</td>
+				<td>${personalData.updatedDate}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+	<span style="margin-left:-1%;color: blue;"><b>Parking details</b></span>
+	<span style="margin-left:40%;color: red;">${error}</span>
+		<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
+			<thead style="text-align: center;font-size: 12px;"> <!-- class="table-dark" -->
+				<tr style="text-align: center;">
+					<th scope="col" style="background-color: turquoise;">Location</th>
+					<th scope="col" style="background-color: turquoise;">Vehicle No.</th>
+					<th scope="col" style="background-color: turquoise;">Vehicle-Type</th>
+					<th scope="col" style="background-color: turquoise;">Engine-Type</th>
+					<th scope="col" style="background-color: turquoise;">Classification</th>
+					<th scope="col" style="background-color: turquoise;">Term</th>
+					<th scope="col" style="background-color: turquoise;">Price</th>
+					<th scope="col" style="background-color: turquoise;">Discount</th>
+					<th scope="col" style="background-color: turquoise;">Total-Amt</th>
+					<th scope="col" style="background-color: turquoise;">Created-Date</th>
+					<th scope="col" style="background-color: turquoise;">Updated-Date</th>					
+					<th scope="col" style="background-color: turquoise;">Vehicle-Picture</th>
+					<th scope="col" style="background-color: turquoise;"></th>
+					<th scope="col" style="background-color: turquoise;"></th>
+					
+				</tr>
+			</thead>
+			<tbody style="text-align: center;font-size: 12px;">
+				<c:forEach items="${parkingData}" var="dto">
+					<tr>
+						<td>${dto.location}</td>
+						<td>${dto.vehicleNo}</td>
+						<td>${dto.vehicleType}</td>
+						<td>${dto.engineType}</td>
+						<td>${dto.classification}</td>
+						<td>${dto.term}</td>
+						<td>${dto.price}</td>
+						<td>${dto.discount}</td>
+						<td>${dto.totalAmount}</td>
+						<td>${dto.createdDate}</td>
+						<td>${dto.updatedDate}</td>
+						<td>
+							<a href="showFile?fileName=${dto.fileName}&contentType=${dto.contentType}" target="_blank">
+								<img src="showFile?fileName=${dto.fileName}&contentType=${dto.contentType}" width="60" height="50"></a>
+						</td>
+						<td>
+							<a href="parkinginfo/${dto.vehicleNo}" class="btn btn-sm" style="background-color: turquoise;">Update</a>
+						</td>
+ 						<td>
+							<a href="deleteUserParkingData?vehicleNo=${dto.vehicleNo}" class="btn btn-sm" style="background-color: turquoise;">Delete</a>
+						</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
 </div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

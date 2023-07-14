@@ -1,6 +1,5 @@
 package com.xworkz.parkingrental.service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import com.xworkz.parkingrental.dto.ParkingDTO;
 import com.xworkz.parkingrental.dto.ParkingInfoDTO;
 import com.xworkz.parkingrental.dto.UserDTO;
 import com.xworkz.parkingrental.dto.UserParkingDTO;
-import com.xworkz.parkingrental.entity.UserEntity;
 
 public interface ParkingService {
 
@@ -56,7 +54,7 @@ public interface ParkingService {
 		return null;
 	}
 	
-	default List<UserParkingDTO> findUserParkingDtoById(String email){
+	default List<UserParkingDTO> findAllById(String email){
 		return Collections.emptyList();
 	}
 	
@@ -65,6 +63,15 @@ public interface ParkingService {
 	}
 	
 	default boolean addUserParkingInfo(UserParkingDTO uParkingDto, String email) {
+		return false;
+	}
+	
+	default boolean updateUserParkingInfo(UserParkingDTO upDto, String vNo) {
+		return false;
+	}
+	
+	
+	default boolean deleteUserParkingEntityByVehicleNo(String vNo) {
 		return false;
 	}
 }

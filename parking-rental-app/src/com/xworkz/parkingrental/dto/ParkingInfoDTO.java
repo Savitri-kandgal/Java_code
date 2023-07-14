@@ -16,7 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode
 @Slf4j
 public class ParkingInfoDTO implements Serializable, Comparable<ParkingInfoDTO> {
-
+	private static final long serialVersionUID = 1L;
+	
 	private String location;
 	private String vehicleType;
 	private String engineType;

@@ -131,7 +131,7 @@ console.log("btn.disabled: "+btn.disabled);
 	}
 </script>
 </head>
-<body style="background-color: white;margin-bottom: 13%;margin-top: 13%">
+<body style="background-color: white;margin-bottom: 13%;margin-top: 20%">
 	<nav class="navbar fixed-top navbar-dark bg-dark" style="height: 50px;">
 		<div class="container-fluid">
 			<img src="Xworkz-Logo.png" class="w3-bar w3-border" width="85"
@@ -156,7 +156,7 @@ console.log("btn.disabled: "+btn.disabled);
 						<h3 class="p-2" style="color: black;">User Registration Form</h3>
 					</div>
 					<div class="card-body">
-						<form action="userRegistration" method="post">
+						<form action="userRegistration" method="post" enctype="multipart/form-data">
 						
 				<div class="row ">
 							<div class="col-md-6 mt-md-0 mt-3">
@@ -267,12 +267,21 @@ console.log("btn.disabled: "+btn.disabled);
 							</div>
 				</div>
 				<br/>
-				<div class="row" style="margin-left: 35%;">
-							<div class="col-md-6 mt-md-0 mt-3">
+				<div class="row" > 
+							<div class="col-md-10 mt-md-0 mt-3">
+								<label for="file">Upload vehicle pic:</label>
+								<input type="file" name="file" id="file" class="form-control shadow" style="background-color: ghostwhite;"> 
+									<span id="file" style="color: red;"></span>
+							</div>							
+				</div>	
+				<br/>			
+				<div class="row" > <!-- style="margin-left: 35%;" -->
+							<div class="col-md-4 mt-md-0 mt-3">
 								<input type="checkbox" id="agreement" name="agreement" class="shadow required" onclick="enableSubmit()"/>
 								<label for="agreement" style="color:blue;">Agreement</label> <span id="agreement"
 									style="color: red;"></span>
 							</div>
+							
 				</div>
 				<br/>
 	<div class="row" style="margin-left: 25%;">

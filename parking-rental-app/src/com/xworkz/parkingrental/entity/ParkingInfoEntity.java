@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @AllArgsConstructor
 @Slf4j
-@Table(name="parking_info")
+@Table(name="parking_details")
 @NamedQuery(name="findByLTTCT", query="select aa from ParkingInfoEntity aa where aa.location=:lc and aa.vehicleType=:vtype and aa.engineType=:etype and aa.classification=:cls and aa.term=:trm")
 @NamedQuery(name="findByPrice", query="select aa from ParkingInfoEntity aa where aa.price=:prc")
 @NamedQuery(name="findByPriceAndDiscount", query="select aa from ParkingInfoEntity aa where aa.price=:prc and aa.discount=:dis")
@@ -30,20 +30,28 @@ public class ParkingInfoEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="ID")
 	private int id;
-	@Column(name="Location")
+	
+	@Column(name="LOCATION")
 	private String location;
-	@Column(name="Vehicle_Type")
+	
+	@Column(name="VEHICLE_TYPE")
 	private String vehicleType;
-	@Column(name="Engine_type")
+	
+	@Column(name="ENGINE_TYPE")
 	private String engineType;
-	@Column(name="V_Classification")
+	
+	@Column(name="CLASSIFICATION")
 	private String classification;
-	@Column(name="Term")
+	
+	@Column(name="TERM")
 	private String term;
-	@Column(name="Price")
+	
+	@Column(name="PRICE")
 	private int price;
-	@Column(name="Discount")
+	
+	@Column(name="DISCOUNT")
 	private String discount;
 	
 	public ParkingInfoEntity(){

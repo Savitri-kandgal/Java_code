@@ -2,9 +2,6 @@ package com.xworkz.parkingrental.dto;
 
 import java.io.Serializable;
 import java.time.LocalTime;
-
-import javax.persistence.Column;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode
 public class UserDTO implements Serializable, Comparable<UserDTO> {
-
+	private static final long serialVersionUID = 1L;
 	
 	private String name;
 	private String email;
@@ -32,6 +29,7 @@ public class UserDTO implements Serializable, Comparable<UserDTO> {
 	private int otpCount;
 	private String AcctStatus;
 	private LocalTime otpExpiryTime;
+	
 	
 	public UserDTO() {
 		log.info("created: "+this.getClass().getSimpleName());

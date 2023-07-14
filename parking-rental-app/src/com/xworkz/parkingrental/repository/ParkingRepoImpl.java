@@ -1,5 +1,7 @@
 package com.xworkz.parkingrental.repository;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -8,8 +10,6 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
-
-import com.xworkz.parkingrental.dto.UserParkingDTO;
 import com.xworkz.parkingrental.entity.ParkingEntity;
 import com.xworkz.parkingrental.entity.ParkingInfoEntity;
 import com.xworkz.parkingrental.entity.UserEntity;
@@ -94,12 +94,14 @@ public class ParkingRepoImpl implements ParkingRepo {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ParkingInfoEntity> findByLocation(String location) {
 		log.info("running findByLocation()");
 		EntityManager manager = factory.createEntityManager();
 		Query query = manager.createNamedQuery("findByLocation");
 		query.setParameter("lc", location);
 		try {
+			
 			List<ParkingInfoEntity> list = query.getResultList();
 			return list;
 		} catch (Exception e) {
@@ -173,14 +175,16 @@ public class ParkingRepoImpl implements ParkingRepo {
 		}
 	}
 	
-	public List<UserParkingEntity> findParkingEntitiesByUserId(Integer id){
-		log.info("running findUserParkingEntityByUserId()");
+	public List<UserParkingEntity> findAllByUserId(Integer id){
+		log.info("running findAllByUserId()");
 		EntityManager manager = factory.createEntityManager();
 		Query query = manager.createNamedQuery("findAllByUserId");
 		query.setParameter("uId", id);
+		query.setParameter("status", true);
 		try {
-			List upList= query.getResultList();
-			log.info("repo: findUserParkingEntityByUserId: upList: "+upList);
+			@SuppressWarnings("unchecked")
+			List<UserParkingEntity> upList= query.getResultList();
+			log.info("repo: findAllByUserId: upList: "+upList);
 			 return upList;
 		} catch (Exception e) {
 		//	e.printStackTrace();
@@ -203,5 +207,37 @@ public class ParkingRepoImpl implements ParkingRepo {
 		}finally {
 			manager.close();
 		}
+	}
+	
+	public boolean deleteUserParkingEntity(String vehicleNo) {
+		log.info("running deleteUserParkingEntity()");
+		boolean flag=true;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+		String formattedDate = dateFormat.format(new Date());
+		EntityManager manager = factory.createEntityManager();
+		EntityTransaction transaction = manager.getTransaction();
+
+		Query query = manager.createNamedQuery("findByVehicleNo");
+		query.setParameter("vNo", vehicleNo);
+		
+		try {
+			UserParkingEntity entity = (UserParkingEntity) query.getSingleResult();
+			if(manager.contains(entity)){
+				log.info("contains entity");
+				flag=false;
+				entity.setActive(flag);
+				entity.setUpdatedDate(formattedDate);
+				transaction.begin();
+				manager.merge(entity);
+				transaction.commit();
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			manager.close();
+		}
+		return false;
 	}
 }

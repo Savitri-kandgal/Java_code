@@ -98,7 +98,7 @@ var otp=document.getElementById("otp").value;
 var url="http://localhost:8080/parking-rental-app/validateOTP/"+otp;
 console.log(url);
 const xmlHttp=new XMLHttpRequest();
-xmlHttp.open("GET", url);
+xmlHttp.open("POST", url);
 xmlHttp.send();
 xmlHttp.onload=function(){
 	console.log(this.responseText);
@@ -149,7 +149,7 @@ xmlHttp.onload=function(){
     }
 </script>
 </head>
-<body onload="countdown();">
+<body>
 	<nav class="navbar fixed-top navbar-dark bg-dark" style="height: 50px;">
 		<div class="container-fluid">
 			<img src="Xworkz-Logo.png" class="w3-bar w3-border" width="85" height="40">
@@ -159,7 +159,7 @@ xmlHttp.onload=function(){
 			</div>
 		</div>
 	</nav>
-				    <div style="display: flex; width:80%;
+<!-- 				    <div style="display: flex; width:80%;
                 justify-content:center; padding-top: 0%;">
        			 Time Left ::
 			    </div>
@@ -172,7 +172,7 @@ xmlHttp.onload=function(){
 			        </font>
 			        <input id="seconds" type="text" style="width: 2%; border: none; font-size: 16px;
 			                      font-weight: bold; color: black;">
-			    </div>
+			    </div> -->
 		<div class="container">
 		<div class="row justify-content-center mt-5" >
 			<div class="col-lg-6 col-md-8 col-sm-8" style="margin-top:-5%;">
@@ -186,11 +186,11 @@ xmlHttp.onload=function(){
 					</div>
 					<div class="card-body">
 				
-<form action="generateOTPAndLogin" method="get" class="container center" style="margin-right: 50px">
+<form action="generateOTPAndLogin" method="post" class="container center" style="margin-right: 50px">
 <span style="color:red;font-size: 12px;" id="emailDisplay">${emailError}</span> 
 						<div class="row">
 							<div class="col-md-7 mt-md-0 mt-3"> 
-								<input type="text"  class="form-control shadow"  onkeyup="enableSubmit()" id="email" name="email" placeholder="Enter email address" onchange="EmailAjax()"/>
+								<input type="text"  class="form-control shadow" onkeyup="enableSubmit()" id="email" name="email" value="${mail}" placeholder="Enter email address" onchange="EmailAjax()"/>
 								<span id="email" style="color:red;"></span>
 							</div>
 							<div class="col-md-4 mt-md-0 mt-3">

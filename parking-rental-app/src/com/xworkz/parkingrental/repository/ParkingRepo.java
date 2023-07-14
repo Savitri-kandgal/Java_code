@@ -2,8 +2,6 @@ package com.xworkz.parkingrental.repository;
 
 import java.util.Collections;
 import java.util.List;
-
-import com.xworkz.parkingrental.dto.UserParkingDTO;
 import com.xworkz.parkingrental.entity.ParkingEntity;
 import com.xworkz.parkingrental.entity.ParkingInfoEntity;
 import com.xworkz.parkingrental.entity.UserEntity;
@@ -53,11 +51,15 @@ public interface ParkingRepo {
 		return false;
 	}
 	
-	default List<UserParkingEntity> findParkingEntitiesByUserId(Integer id){
+	default List<UserParkingEntity> findAllByUserId(Integer id){
 		return Collections.emptyList();
 	}
 
 	default UserParkingEntity findByVehicleNo(String vehicleNo) {
 		return null;
+	}
+	
+	default boolean deleteUserParkingEntity(String vehicleNo) {
+		return false;
 	}
 }

@@ -103,8 +103,22 @@ console.log("btn.disabled: "+btn.disabled);
 		}
 	}
 </script>
+<script>
+function updateDatails() {
+console.log("updateDatails logged-in");
+document.getElementById("vehicleNo").value="${upDto.vehicleNo}";
+document.getElementById("location").value="${upDto.location}";
+document.getElementById("vehicleType").value="${upDto.vehicleType}";
+document.getElementById("engineType").value="${upDto.engineType}";
+document.getElementById("classification").value="${upDto.classification}";
+document.getElementById("term").value="${upDto.term}";
+document.getElementById("price").value="${upDto.price}"; 
+document.getElementById("discount").value="${upDto.discount}"; 
+document.getElementById("totalAmount").value="${upDto.totalAmount}"; 
+}
+</script>
 </head>
-<body style="background-color: white;margin-bottom: 10%;margin-top: 10%">
+<body style="background-color: white;margin-bottom: 10%;margin-top: 10%" onload="updateDatails();enableSubmit()">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -135,21 +149,24 @@ console.log("btn.disabled: "+btn.disabled);
 						<h3 class="p-2" style="color: black;">Slot Booking Form</h3>
 					</div>
 					<div class="card-body">
-						<form action="addUserParkingInfo" method="post" enctype="multipart/form-data">
+						<form action="parkingInfo" method="post" enctype="multipart/form-data" >
 						
 				<div class="row">
 							<div class="col-md-6 mt-md-0 mt-3">
 								<input type="text" id="vehicleNo" name="vehicleNo"
-									placeholder="Enter vehicle No." class="form-control shadow required" onchange="vehicleNoAjax()" onclick="enableSubmit()"/> 
+									placeholder="Enter vehicle No." class="form-control shadow required" /> 
 									<span id="vehicleNo"
 									style="color: red;"></span>
 							</div>
+							<div class="col-md-6 mt-md-0 mt-3">
+								<input type="hidden" id="vNo" name="vNo" value="${upDto.vehicleNo}"/> 
+							</div>							
 				</div>
 				<br/>
 				<div class="row">
 							<div class="col-md-6 mt-md-0 mt-3">
 							<select name="location"
-									id="location"  class="form-select shadow required" onclick="enableSubmit()" aria-label="Default select example">
+									id="location"  class="form-select shadow required"  aria-label="Default select example">
 									<option value="">Location</option>
 									<option value="RajajiNagar">RajajiNagar</option>
 									<option value="E.city">E.city</option>
@@ -159,7 +176,7 @@ console.log("btn.disabled: "+btn.disabled);
 							</div>		
 					
 					<div class="col-md-6 mt-md-0 mt-3">
-							<select name="vehicleType" id="vehicleType" class="form-select shadow required " onclick="enableSubmit()" aria-label="Default select example">
+							<select name="vehicleType" id="vehicleType" class="form-select shadow required " aria-label="Default select example">
 										<option value="">Vehicle Type</option>
 										<option value="2_Wheeler">2-wheeler</option>
 										<option value="4_Wheeler">4-wheeler</option>
@@ -169,14 +186,14 @@ console.log("btn.disabled: "+btn.disabled);
 				<br/>
 				<div class="row">
 						<div class="col-md-6 mt-md-0 mt-3">
-							<select name="engineType" id="engineType" class="form-select shadow required " onclick="enableSubmit()" aria-label="Default select example">
+							<select name="engineType" id="engineType" class="form-select shadow required " aria-label="Default select example">
 										<option value="">Engine Type</option>
 										<option value="Normal">Normal</option>
 										<option value="Electrical">Electrical</option>
 							</select> <span id="engineType" style="color: red;"></span>
 						</div>
 						<div class="col-md-6 mt-md-0 mt-3">
-						<select name="classification" id="classification" class="form-select shadow required " onclick="enableSubmit()" aria-label="Default select example">
+						<select name="classification" id="classification" class="form-select shadow required " aria-label="Default select example">
 									<option value="">Classification</option>
 									<optgroup label="Bike">
 										<option value="Bike">Bike</option>
@@ -196,7 +213,7 @@ console.log("btn.disabled: "+btn.disabled);
 							<div class="col-md-6 mt-md-0 mt-3">
 								<label for="term">Term:</label>
 								<select name="term" id="term"
-									onchange="ajaxWithObj()" class="form-select shadow required " onclick="enableSubmit()" aria-label="Default select example">
+									onchange="ajaxWithObj()" class="form-select shadow required " aria-label="Default select example">
 									<option value="">select</option>
 									<option value="1_day">1 Day</option>
 									<option value="7_days">7 Days</option>
@@ -230,17 +247,22 @@ console.log("btn.disabled: "+btn.disabled);
 				</div>
 				<br/>
 				<div class="row" > 
-							<div class="col-md-10 mt-md-0 mt-3">
-								<label for="file">Upload vehicle pic:</label>
-								<input type="file" name="file" id="file" class="form-control shadow" value="hello" style="background-color: ghostwhite;"> 
-									<span id="file" style="color: red;"></span>
-							</div>							
+					<div class="col-md-10 mt-md-0 mt-3">
+						<label for="file">Upload vehicle pic:</label>
+						<input type="file" name="file" id="file" class="form-control shadow" value="hello" style="background-color: ghostwhite;"> 
+						<span id="file" style="color: red;"></span>
+					</div>	
+					<div class="col-md-3 mt-md-0 mt-3">
+						<label for="file">Uploaded Pic:</label>
+						<a href="showFile?fileName=${upDto.fileName}&contentType=${upDto.contentType}" target="_blank">
+						<img src="showFile?fileName=${upDto.fileName}&contentType=${upDto.contentType}" width="60" height="50"></a>
+					</div>						
 				</div>
 				<br/>				
-	<div class="row" style="margin-left: 25%;">
+		<div class="row" style="margin-left: 25%;">
 			<div class="col-md-12 mt-md-0 mt-10">
-						<button type="submit" id="smtBtn" class="btn w-30 shadow" style="background-color: turquoise;color:black; text-align: center;" disabled>
-						Book
+				<button type="submit" id="smtBtn" class="btn w-30 shadow" style="background-color: turquoise;color:black; text-align: center;" disabled>
+						Update
 						</button>&ensp;&ensp;&ensp;
 						<button type="Reset" class="btn w-30 shadow" style="background-color: turquoise;color:black;;text-align: center;">
 						Reset
