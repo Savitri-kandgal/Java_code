@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -20,6 +22,7 @@ import com.xworkz.parkingrental.entity.ParkingInfoEntity;
 import com.xworkz.parkingrental.entity.UserEntity;
 import com.xworkz.parkingrental.entity.UserParkingEntity;
 import com.xworkz.parkingrental.repository.ParkingRepo;
+import com.xworkz.parkingrental.util.DateDifference;
 import com.xworkz.parkingrental.util.GenerateOTP;
 import com.xworkz.parkingrental.util.ParkingEmail;
 import com.xworkz.parkingrental.util.UserOTPMail;
@@ -163,15 +166,17 @@ public class ParkingServiceImpl implements ParkingService {
 			BeanUtils.copyProperties(userDto, userEntity);
 			repo.saveUserData(userEntity);
 
-			UserParkingEntity upEntity = new UserParkingEntity();
 			UserEntity userByEmail = repo.findByUserEmail(userDto.getEmail());
+			
+			log.info("userByEmail: "+userByEmail);
 			upDto.setUserId(userByEmail.getId());
+			upDto.setPayment("pending");
 			upDto.setCreatedDate(formattedDate);
 			upDto.setUpdatedDate(formattedDate);
+			upDto.setActive(true);
 			
+			UserParkingEntity upEntity = new UserParkingEntity();
 			BeanUtils.copyProperties(upDto, upEntity);
-			upEntity.setActive(true);
-			
 			repo.saveUserParkingInfo(upEntity);
 			userParkingEmail.sendMail(userDto.getEmail(), userDto.getName(), upDto);
 			return true;
@@ -189,14 +194,13 @@ public class ParkingServiceImpl implements ParkingService {
 		String formattedDate = dateFormat.format(new Date());
 		log.info("service: generateOtp: formattedDate: " + formattedDate);
 		
-		
 		UserEntity entity = repo.findByUserEmail(email);
 		entity.setUpdatedDate(formattedDate);
 		entity.setOtp(otp);
 		entity.setOtpCount(0);
 		entity.setAcctStatus("Active");
 		entity.setOtpExpiryTime(LocalTime.now().plusSeconds(120));
-
+		
 		if (repo.updateUserEntity(entity) && userOTPMail.sendMail(email, entity.getName(), otp))																							// send email
 		{
 			log.info("otp generated & sent to registered email");
@@ -207,24 +211,27 @@ public class ParkingServiceImpl implements ParkingService {
 		}
 	}
 
-	//private int otpCount=0; 
 	public boolean validateOTP(String email, Integer otp) {
 		log.info("running validateOTP()");
 		UserEntity entity = repo.findByUserEmail(email);
 		int otpCount = entity.getOtpCount();
 		if (entity.getAcctStatus().equals("Active")) {
+			log.info("service: validateOTP(): acct is active");
 			if (entity.getOtp().equals(otp)) {
 				log.info("valid otp");
 				return true;
 			} else {
-				log.info("service: validateOTP(): otpCount: " + otpCount);
+				log.info("service: validateOTP(): invalid otp");
 				otpCount++;
+				log.info("service: validateOTP(): otp count: " + otpCount);
 				if (otpCount < 3) {
+					log.info("service: validateOTP(): otp count is < 3");
 					entity.setOtpCount(otpCount);
 					repo.updateUserEntity(entity);
 					log.info("invalid otp");
 					return false;
 				} else {
+					log.info("service: validateOTP(): otp count is = 3");
 					entity.setOtpCount(otpCount);
 					entity.setAcctStatus("Blocked");
 					repo.updateUserEntity(entity);
@@ -285,12 +292,13 @@ public class ParkingServiceImpl implements ParkingService {
 			String formattedDate = dateFormat.format(new Date());
 			
 			upDto.setUserId(entityByEmail.getId());
+			upDto.setPayment("pending");
 			upDto.setCreatedDate(formattedDate);
 			upDto.setUpdatedDate(formattedDate);
+			upDto.setActive(true);
 			
 			UserParkingEntity upEntity = new UserParkingEntity();
 			BeanUtils.copyProperties(upDto, upEntity);
-			upEntity.setActive(true);
 			repo.saveUserParkingInfo(upEntity);
 			userParkingEmail.sendMail(email, entityByEmail.getName(), upDto);
 			return true;
@@ -299,29 +307,80 @@ public class ParkingServiceImpl implements ParkingService {
 		return false;
 	}
 	
-	public boolean updateUserParkingInfo(UserParkingDTO upDto, String vNo) {
+	public boolean updateUserParkingInfo(UserParkingDTO upDto) {
 		log.info("service: running updateUserParkingInfo()");
-		 UserParkingEntity entity = repo.findByVehicleNo(vNo);
+		log.info("service: running updateUserParkingInfo(): upDto: "+upDto);
+		 UserParkingEntity entity = repo.findByVehicleNo(upDto.getVehicleNo());
 		if (entity != null) {
-			log.info("entity is not null");
+			log.info("entity is not null: "+entity);
 			
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
 			String formattedDate = dateFormat.format(new Date());
-			
-			upDto.setUserId(entity.getId());
-			upDto.setCreatedDate(entity.getCreatedDate());
-			upDto.setUpdatedDate(formattedDate);
-			upDto.setActive(entity.isActive());
-			
-			UserParkingEntity upEntity = new UserParkingEntity();
-			BeanUtils.copyProperties(upDto, upEntity);
-	
-			repo.saveUserParkingInfo(upEntity);
 		
-		//	userParkingEmail.sendMail(email, entityByEmail.getName(), upDto);
-			return true;
+			entity.setLocation(upDto.getLocation());
+			entity.setVehicleType(upDto.getVehicleType());
+			entity.setEngineType(upDto.getEngineType());
+			entity.setClassification(upDto.getClassification());
+			entity.setTerm(upDto.getTerm());
+			entity.setPrice(upDto.getPrice());
+			entity.setDiscount(upDto.getDiscount());
+			entity.setTotalAmount(upDto.getTotalAmount());
+			entity.setUpdatedDate(formattedDate);
+			
+			if(upDto.getFileName()!=null)
+			{
+				entity.setFileName(upDto.getFileName());
+				entity.setOriginalFileName(upDto.getOriginalFileName());
+				entity.setContentType(upDto.getContentType());
+			}
+			boolean updated=repo.updateUserParkingInfo(entity);
+			if(updated) {
+				log.info("service: updateUserParkingInfo(): updated user parking info");
+				return true;
+			}
+			log.info("service: updateUserParkingInfo(): not updated user parking info");
+			return false;
 		}
-		log.info("entityByEmail is not null");
+		log.info("service: updateUserParkingInfo(): entity is null");
+		return false;
+	}
+	
+	public Map<String, Long> findPamentDueDays(String email) {
+		log.info("running findPamentDueDays()");
+		UserEntity uEntity = repo.findByUserEmail(email);
+		List<UserParkingEntity> upList = repo.findAllByUserId(uEntity.getId());
+		
+		List<UserParkingEntity> paymentPendingList = upList.stream().filter(e -> e.isActive())
+				.filter(e -> e.getPayment().equals("pending")).collect(Collectors.toList());
+		log.info("findPamentDueDays(): paymentPendingList: " + paymentPendingList);
+
+		if(!paymentPendingList.isEmpty()) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+		String formattedDate = dateFormat.format(new Date());
+
+		Map<String, Long> dueDaysMap = new LinkedHashMap<String, Long>();
+		
+		for (UserParkingEntity upEntity : paymentPendingList) {
+			long noOfDays = DateDifference.findDaysDifference(upEntity.getCreatedDate(), formattedDate);
+			dueDaysMap.put(upEntity.getVehicleNo(), noOfDays);
+		}
+		log.info("findPamentDueDays(): DueDays Map: " + dueDaysMap);
+		return dueDaysMap;
+	}
+		log.info("findPamentDueDays(): no due");
+		return null;
+	}
+	
+		public boolean updatePayment(String vehicleNo) {
+		log.info("running updatePayment()");
+		 UserParkingEntity entity = repo.findByVehicleNo(vehicleNo);
+		 entity.setPayment("paid");
+		 boolean updated = repo.updateUserParkingInfo(entity);
+		 if(updated) {
+			 log.info("payment status updated");
+			 return true;
+		 }
+		log.info("payment status not updated");
 		return false;
 	}
 	
@@ -336,6 +395,19 @@ public class ParkingServiceImpl implements ParkingService {
 			log.info("deleteUserParkingEntityByVehicleNo(): entity not deleted");
 			return false;
 		}
-		
+	}
+	
+	public List<UserParkingDTO> findAll(){
+		log.info("running findAll()");
+		List<UserParkingEntity> entityList = repo.findAll();
+		if(entityList!=null) { 
+		List<UserParkingDTO> dtoList = entityList.stream().map(entity->{
+			UserParkingDTO dto=new UserParkingDTO();
+			BeanUtils.copyProperties(entity, dto);
+			return dto;
+		}).collect(Collectors.toList());
+		return dtoList;
+	}
+		return Collections.emptyList();
 	}
 }

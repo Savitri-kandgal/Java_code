@@ -17,7 +17,7 @@
 
 <!-- CSS link -->
 <link rel="stylesheet" href="style.css">
-<title>Rental-Parking App</title>
+<title>Payment</title>
 <style>
 .selector-for-some-widget {
 	box-sizing: content-box;
@@ -36,7 +36,7 @@
 }
 </style>
 </head>
-<body>
+<body Style="margin-top:5%;margin-bottom:5%;">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -47,47 +47,56 @@
 				<img src="Xworkz-Logo.png" class="w3-bar w3-border" width="85"
 					height="40" style="margin-top: -20px">
 			</div>
+			
 			<div class="w3-bar w3-border"
 				style="margin-left: 780px; margin-top: -20px;">
-				<a href="UserLogin.jsp" class="btn btn-sm"
-					style="background-color: turquoise;">Sign out</a>
+				<a href="duePayment?email=${userDto.email}" class="btn btn-sm"
+					style="background-color: turquoise;">Home</a>
 			</div>
 			<div class="navbar-left" class="w3-bar w3-border">
 			<p class="navbar-text" style="color: white;font-size: 15px;">Welcome, ${userDto.name}</p>
 			</div>
 		</div>
 	</nav>
-<div> 
-<button class="btn" type="submit" onclick="window.location.href='UserParkingInfo.jsp';" style="background-color: turquoise;color:black;position:absolute; top:15%; left:1%;">Add parking Info</button>
-<button class="btn" type="submit" onclick="window.location.href='userViewData';" style="background-color: turquoise;color:black;position:absolute; top:25%; left:1%;">View Data</button>
-</div>
 
-<div>
-	<span style="margin-left:16.2%;color: red"><b>${due}</b></span>
-	<span style="margin-left:16.2%;color: blue"><b>${noDue}</b></span>
+<div class="card-body" style="margin-top:-10%;"> <!-- background-color:pink; -->
+	<div class="row">
+	<span style="color: green;text-align: center;"><b>${paid}</b></span>
+	<span style="color: red;text-align: center;"><b>${due}</b></span>
+	<span style="color: blue;text-align: center;"><b>${noDue}</b></span>
+	<span style="color: red;text-align: center;"><b>${error}</b></span>
 		<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
 			<thead style="text-align: center;font-size: 12px;">
 				<tr>
-				<th scope="col" style="background-color: turquoise;">VehicleNo.</th>
-				<th scope="col" style="background-color: turquoise;">Due-since</th>
+				<th scope="col" style="background-color: turquoise;">Vehicle-No.</th>
+				<th scope="col" style="background-color: turquoise;">Location</th>
+				<th scope="col" style="background-color: turquoise;">Term</th>
+				<th scope="col" style="background-color: turquoise;">Due-Amount</th>
+				<th scope="col" style="background-color: turquoise;"></th>
 				</tr>
 			</thead>
 			<tbody style="text-align: center;font-size: 12px;">
-			<c:forEach items="${dueDays}" var="record">
+			<c:forEach items="${ppList}" var="record">
 				<tr>
-				<td>${record.getKey()}</td>
-				<td>${record.getValue()} day/s</td>
+				<td>${record.vehicleNo}</td>
+				<td>${record.location}</td>
+				<td>${record.term}</td>
+				<td>${record.totalAmount}</td>
+				<td>
+				<a href="payment?vehicleNo=${record.vehicleNo}" class="btn btn-sm" style="background-color: turquoise;">Pay</a>
+				</td>
 				</tr>
 			</c:forEach>
 			</tbody>
 		</table>
+	</div>
 </div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 		crossorigin="anonymous"></script>
 	<div class="footer">
-		<small style="color:white;">&copy; Created by: Savitri B Kandgal,</small><small style="color:white;">&ensp;Savitri.Kandgal@gmail.com</small>&ensp;<small style="color:white;">|</small><small style="color:lightgreen;">&ensp;Last login time: ${userDto.updatedDate}</small>
+		<small style="color:white;">&copy; Created by: Savitri B Kandgal,</small><small style="color:white;">&ensp;Savitri.Kandgal@gmail.com</small>&ensp;|<small style="color:lightgreen;">&ensp;Last login time: ${userDto.updatedDate}</small>
 	</div>
 </body>
 </html>

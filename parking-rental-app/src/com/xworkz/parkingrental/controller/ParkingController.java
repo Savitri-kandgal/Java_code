@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,12 +22,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 import com.xworkz.parkingrental.constant.FileConstant;
 import com.xworkz.parkingrental.dto.ParkingDTO;
 import com.xworkz.parkingrental.dto.ParkingInfoDTO;
 import com.xworkz.parkingrental.dto.UserDTO;
 import com.xworkz.parkingrental.dto.UserParkingDTO;
 import com.xworkz.parkingrental.service.ParkingService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -93,7 +97,22 @@ public class ParkingController {
 			return "AdminViewData";
 		}
 	}
-
+	
+	@RequestMapping("userParkingInfo")
+	public String findUserParkingInfo(Model model, HttpServletRequest req) {
+		log.info("running findUserParkingInfo()");
+	List<UserParkingDTO> list = service.findAll();
+	log.info("List<UserParkingDTO> list: "+list);
+	if(list!=null) {
+		HttpSession session = req.getSession();
+		session.setAttribute("upList", list);
+	}else {
+		model.addAttribute("error", "No record fond");
+	}
+	return "ViewUserParkingInfo";
+	}
+	
+	//user
 	@PostMapping("userRegistration")
 	public String userRegistration(UserDTO userDto, UserParkingDTO upDto, Model model, MultipartFile file) throws FileNotFoundException, IOException {
 		log.info("running userRegistration");
@@ -117,22 +136,22 @@ public class ParkingController {
 	}
 
 	@PostMapping("generateOTPAndLogin")
-	public String onGenerateOTPAndLogin(String generateOtp, String login, String email, Integer otp, Model model,
+	public String onGenerateOTPAndLogin(String email, String generateOtp, Integer otp, String login, Model model,
 			HttpServletRequest req) {
-		
+
 		log.info("running onGenerateOTPAndLogin()");
 		log.info("Controller: generateOtp: " + generateOtp);
 		log.info("controller: login from UI: " + login);
 		log.info("controller: email from UI: " + email);
 		log.info("controller: otp from UI: " + otp);
-					
+
 		if (generateOtp != null && "Generate OTP".equals(generateOtp)) {
-			
+
 			UserDTO dto = service.findByUserEmail(email);
-			
+
 			HttpSession session = req.getSession();
 			session.setAttribute("emailId", email);
-			
+
 			if (dto != null) {
 				boolean otpStatus = service.generateOtp(email);
 				if (otpStatus) {
@@ -140,7 +159,7 @@ public class ParkingController {
 					model.addAttribute("generateOtpSuccess",
 							"OTP sent to registered mail-id, will be expired after 2 mins");
 				} else {
-					model.addAttribute("mail", email);
+					model.addAttribute("mail", "");
 					model.addAttribute("generateOtpError", "Re-generate the OTP");
 				}
 			} else {
@@ -150,29 +169,58 @@ public class ParkingController {
 		} else if (login != null && "Login".equals(login)) {
 			log.info("validating otp...");
 			log.info("controller: onGenerateOTP(): email from login.jsp: " + email);
-			UserDTO dto = service.findByUserEmail(email);
-			boolean otpNotExpired = dto.getOtpExpiryTime().isAfter(LocalTime.now());
-			log.info("otp Not Expired: " + otpNotExpired);
-			if (otpNotExpired) {
-				log.info("OTP not expired");
-				boolean isOtpValid = service.validateOTP(email, otp);
-				if (isOtpValid) {
-					
-					HttpSession session = req.getSession();
-					session.setAttribute("userDto", dto);
-					
-					log.info("session: "+session);
-					return "UserLoginSuccess";
-				} else {
-					if (dto.getOtpCount() < 3) {
-						model.addAttribute("otpError", "*Invalid OTP");
+
+			if (email != null && email != "") {
+				UserDTO dto = service.findByUserEmail(email);
+				boolean otpNotExpired = dto.getOtpExpiryTime().isAfter(LocalTime.now());
+				log.info("controller: onGenerateOTP(): dto.getOtpExpiryTime():" + dto.getOtpExpiryTime());
+				log.info("controller: onGenerateOTP(): LocalTime.now():" + LocalTime.now());
+				log.info("Is OTP active? " + otpNotExpired);
+				if (otpNotExpired) {
+					log.info("OTP not expired");
+					boolean isOtpValid = service.validateOTP(email, otp);
+					UserDTO recentDto = service.findByUserEmail(email);
+					if (isOtpValid) {
+						log.info("controller: onGenerateOTP():  valid otp");
+						HttpSession session = req.getSession();
+						session.setAttribute("userDto", recentDto);
+						Map<String, Long> dueDetails = service.findPamentDueDays(email);
+					//	session.setAttribute("dueDays", dueDetails);
+						if (dueDetails!=null) {
+							log.info("dueDetails are not empty");
+							model.addAttribute("due", "Payment Due");
+							model.addAttribute("dueDays", dueDetails);
+						} else {
+							model.addAttribute("noDue", "No due");
+						}
+						return "UserLoginSuccess";
 					} else {
-						model.addAttribute("acctLocked", "*Your account is blocked");
+						log.info("controller: onGenerateOTP():  in-valid otp");
+						HttpSession session = req.getSession();
+						String mail = (String) session.getAttribute("emailId");
+
+						if (recentDto.getOtpCount() < 3) {
+							log.info("controller: onGenerateOTP(): " + recentDto.getOtpCount() + " < 3");
+							model.addAttribute("mail", mail);
+							model.addAttribute("otpError", "*Invalid OTP");
+							return "UserLogin";
+						} else {
+							log.info("controller: onGenerateOTP(): " + recentDto.getOtpCount() + " = 3");
+							model.addAttribute("mail", "");
+							model.addAttribute("acctLocked", "*Your account is blocked");
+							return "UserLogin";
+						}
 					}
+				} else {
+					log.info(LocalTime.now() + "(now)" + " = " + dto.getOtpExpiryTime() + "(otp expiry time)");
+					log.info("OTP expired");
+					model.addAttribute("otpExpired", "*OTP expired, please generate the new OTP");
+					return "UserLogin";
 				}
-			} 
-			log.info("OTP expired");
-			model.addAttribute("otpExpired", "*OTP expired, please generate the new OTP");
+			}
+			log.info("email is null");
+			model.addAttribute("generateOtpError", "*Invalid data, please generate OTP");
+			return "UserLogin";
 		}
 		return "UserLogin";
 	}
@@ -212,8 +260,8 @@ public class ParkingController {
 		
 		HttpSession session = req.getSession();
 		String mail = (String) session.getAttribute("emailId");
+		Object userDto = session.getAttribute("userDto");
 		
-		UserDTO userDto = service.findByUserEmail(mail);
 		List<UserParkingDTO> upDtos = service.findAllById(mail);
 
 		if (userDto != null && !upDtos.isEmpty()) {
@@ -224,6 +272,27 @@ public class ParkingController {
 		model.addAttribute("error", "Facing some issue, please retry after some time");
 		return "UserViewData";
 	}
+	
+	
+	@GetMapping("userParkingData")
+	public String viewUserParkingData(String location, Model model, HttpServletRequest req) {
+		log.info("viewUserParkingData()");
+		
+		HttpSession session = req.getSession();
+		String mail = (String) session.getAttribute("emailId");
+		Object userDto = session.getAttribute("userDto");
+		
+		List<UserParkingDTO> upDtos = service.findAllById(mail);
+
+		if (userDto != null && !upDtos.isEmpty()) {
+			model.addAttribute("personalData", userDto);
+			model.addAttribute("parkingData", upDtos);
+			return "UserViewData";
+		}
+		model.addAttribute("error", "Facing some issue, please retry after some time");
+		return "UserViewData";
+	}
+	
 	
 	@GetMapping("showFile")
 	public void showFile(String fileName, String contentType, HttpServletResponse resp) throws IOException {
@@ -242,51 +311,116 @@ public class ParkingController {
 		outputStream.flush();
 	}
 	
-		@GetMapping("/parkinginfo/{vehicleNo}")
-		public String loadingUserParkingData(String vehicleNo, Model model, MultipartFile file) {
+		@RequestMapping(value ="/parkinginfo/byVehicleNo/{vehicleNo}") 
+		//@GetMapping("/parkinginfo")
+		public RedirectView loadingUserParkingData(@PathVariable String vehicleNo, Model model, MultipartFile file, HttpServletRequest req) {
 		log.info("running loadingUserParkingData()");
 		log.info("controller: loadingUserParkingData(): vehicleNo: "+vehicleNo);
 		UserParkingDTO upDto = service.findByVehicleNo(vehicleNo);
 		log.info("controller: loadingUserParkingData(): upDto: "+upDto);
 			model.addAttribute("upDto", upDto);
-			return "UpdateUserParkingInfo";
+			log.info("req.getContextPath(): "+req.getContextPath());
+			RedirectView redirectView=new RedirectView();
+			redirectView.setUrl(req.getContextPath()+ "/UpdateUserParkingInfo.jsp");
+		//	return "UpdateUserParkingInfo";
+			return redirectView;
 	}
 	
-	@PostMapping("/parkinginfo")
-	public String updateUserParkingData(UserParkingDTO upDto, String vNo, Model model, MultipartFile file,
-			HttpServletRequest req) throws FileNotFoundException, IOException {
+	@PostMapping("parkingInfo")
+	public String updateUserParkingData(UserParkingDTO upDto, Model model, MultipartFile file, HttpServletRequest req)
+			throws FileNotFoundException, IOException {
 		log.info("controller: running updateUserParkingData()");
-		log.info("controller: updateUserParkingData(): old vNo from UI: " + vNo);
-
-		UserParkingDTO dto = service.findByVehicleNo(vNo);
-		log.info("controller: updateUserParkingData(): existing user parking data: " + dto);
-		if (upDto != null) {
-			log.info("controller: updateUserParkingData(): upDto is not null");
-
-			if (file != null) {
-				log.info("controller: updateUserParkingData(): new vehicle pic uploaded");
-				upDto.setFileName(System.currentTimeMillis() + "_" + file.getOriginalFilename());
-				upDto.setOriginalFileName(file.getOriginalFilename());
-				upDto.setContentType(file.getContentType());
-
-				File physicalFile = new File(FileConstant.FILE_LOCATION + upDto.getFileName());
-				try (OutputStream os = new FileOutputStream(physicalFile)) {
-					os.write(file.getBytes());
-				}
-			} else {
-				upDto.setFileName(dto.getFileName());
-				upDto.setOriginalFileName(dto.getOriginalFileName());
-				upDto.setContentType(dto.getContentType());
+		log.info("controller: running updateUserParkingData(): upDto: "+upDto);
+		log.info("controller: running updateUserParkingData(): file.isEmpty(): "+file.isEmpty());
+		log.info("controller: running updateUserParkingData(): OriginalFileName: "+file.getOriginalFilename());
+		
+		if (!file.isEmpty()) {
+			log.info("controller: updateUserParkingData(): new pic uploaded");
+			upDto.setFileName(System.currentTimeMillis() + "_" + file.getOriginalFilename());
+			upDto.setOriginalFileName(file.getOriginalFilename());
+			upDto.setContentType(file.getContentType());
+			
+			File physicalFile = new File(FileConstant.FILE_LOCATION + upDto.getFileName());
+			try (OutputStream os = new FileOutputStream(physicalFile)) {
+				os.write(file.getBytes());
 			}
-
-			service.updateUserParkingInfo(upDto, vNo);
-			model.addAttribute("success", "Data updated successfully!");
-			return "UserParkingInfo";
 		}
-		log.info("controller: updateUserParkingData(): This vehicle is already parked");
-		model.addAttribute("error", "*This vehicle is already parked");
-		return "UserParkingInfo";
+		log.info("controller: updateUserParkingData(): upDto after adding new pic: "+upDto);
+		boolean updated = service.updateUserParkingInfo(upDto);
+		if (updated) {
+			log.info("controller: updateUserParkingData(): data updated successfully!");
+			model.addAttribute("success", "Data updated successfully!");
+			return "UpdateUserParkingInfo";
+		} else {
+			log.info("controller: updateUserParkingData(): data not updated");
+			model.addAttribute("error", "*Data not updated");
+			return "UpdateUserParkingInfo";
+		}
 	}
+	
+//	@GetMapping("/payment/{email}")
+	@GetMapping("paymentDue")
+	public String loadPaymentDueData(String email, Model model, HttpServletRequest req) {
+		log.info("running onPayment()");
+
+		List<UserParkingDTO> upList = service.findAllById(email);
+		
+		List<UserParkingDTO> paymentPendingList = upList.stream().filter(e -> e.isActive())
+				.filter(e -> e.getPayment().equals("pending")).collect(Collectors.toList());
+		log.info("onPayment(): paymentPendingList: " + paymentPendingList);
+		if(!paymentPendingList.isEmpty()) {
+			model.addAttribute("ppList", paymentPendingList);
+			model.addAttribute("due", "Payment due:");
+			return "Payment";
+		}
+		model.addAttribute("noDue", "no payment due");
+		return "Payment";
+	}
+	
+	@GetMapping("payment")
+	public String onPayment(String vehicleNo, Model model, HttpServletRequest req) {
+		log.info("running onPayment()");
+
+		boolean updated = service.updatePayment(vehicleNo);
+
+		if (updated) {
+			log.info("onPayment(): amount paid");
+			HttpSession session = req.getSession();
+			String mail = (String) session.getAttribute("emailId");
+
+			List<UserParkingDTO> upList = service.findAllById(mail);
+			List<UserParkingDTO> paymentPendingList = upList.stream().filter(e -> e.isActive())
+					.filter(e -> e.getPayment().equals("pending")).collect(Collectors.toList());
+			log.info("onPayment(): paymentPendingList: " + paymentPendingList);
+			
+			if (!paymentPendingList.isEmpty()) {
+				log.info("onPayment(): paymentPendingList is not empty");
+				model.addAttribute("ppList", paymentPendingList);
+				model.addAttribute("paid", "Payment done: "+vehicleNo);
+				model.addAttribute("due", "Payment due:");
+				return "Payment";
+			}
+			model.addAttribute("paid", "Payment done: "+vehicleNo);
+			model.addAttribute("noDue", "No payment due");
+			return "Payment";
+		}
+		model.addAttribute("error", "not paid");
+		return "Payment";
+	}
+	
+	@GetMapping("duePayment")
+	public String loadDueDays(String email, Model model) {
+		log.info("running loadDueDays()");	
+		Map<String, Long> dueDetails = service.findPamentDueDays(email);
+		if (dueDetails!=null) {
+		log.info("dueDetails are not empty");
+		model.addAttribute("due", "Payment Due");
+		model.addAttribute("dueDays", dueDetails);
+	} else {
+		model.addAttribute("noDue", "No due");
+	}
+	return "UserLoginSuccess";
+}
 	
 	@RequestMapping("deleteUserParkingData")
 	public String onDeleteUserParkingData(String vehicleNo, Model model, HttpServletRequest req) {
@@ -312,4 +446,5 @@ public class ParkingController {
 		}
 		return "UserViewData";
 	}
+	
 }

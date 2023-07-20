@@ -2,6 +2,7 @@ package com.xworkz.parkingrental.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.xworkz.parkingrental.dto.ParkingDTO;
 import com.xworkz.parkingrental.dto.ParkingInfoDTO;
@@ -66,12 +67,23 @@ public interface ParkingService {
 		return false;
 	}
 	
-	default boolean updateUserParkingInfo(UserParkingDTO upDto, String vNo) {
+	default boolean updateUserParkingInfo(UserParkingDTO upDto) {
 		return false;
 	}
 	
+	default boolean updatePayment(String email) {
+		return false;
+	}
 	
 	default boolean deleteUserParkingEntityByVehicleNo(String vNo) {
 		return false;
+	}
+	
+	default Map<String, Long> findPamentDueDays(String email){
+		return null;
+	}
+	
+	default List<UserParkingDTO> findAll(){
+		return Collections.emptyList();
 	}
 }

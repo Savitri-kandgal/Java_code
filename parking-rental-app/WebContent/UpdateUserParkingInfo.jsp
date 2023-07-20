@@ -92,7 +92,7 @@ console.log("btn.disabled: "+btn.disabled);
 		xmlHttp.send();
 		xmlHttp.onload = function() {
 
-	//		console.log(this.responseText);
+			console.log(this.responseText);
 			var obj = JSON.parse(this.responseText);
 	//		console.log(obj.price);
 	//		console.log(obj.discount);
@@ -118,7 +118,7 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 }
 </script>
 </head>
-<body style="background-color: white;margin-bottom: 10%;margin-top: 10%" onload="updateDatails();enableSubmit()">
+<body style="background-color: white;margin-bottom: 10%;margin-top: 15%" onload="updateDatails();enableSubmit()">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -131,7 +131,7 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 			</div>
 			<div class="w3-bar w3-border"
 				style="margin-left: 780px; margin-top: -20px;">
-				<a href="UserLoginSuccess.jsp" class="btn btn-sm"
+				<a href="duePayment?email=${userDto.email}" class="btn btn-sm"
 					style="background-color: turquoise;">Home</a>
 			</div>
 			<div class="navbar-left" class="w3-bar w3-border">
@@ -139,14 +139,14 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 			</div>
 		</div>
 	</nav>
-<div class="wrapper rounded bg-white" style="margin-top:;">
-			<h5 style="color: green;">${success}</h5>
+<div class="wrapper rounded bg-white">
+			<span style="color: green;">${success}</span>
 			<span style="color: red;" id="display">${error}</span>
 	
-				<div class="card shadow">
+				<div class="card shadow" style="margin-top:auto;margin-bottom: auto;">
 					<div class="card-title text-center border-bottom"
 						style="background-color: turquoise;">
-						<h3 class="p-2" style="color: black;">Slot Booking Form</h3>
+						<h3 class="p-2" style="font-size: 25px;">Slot Booking Form</h3>
 					</div>
 					<div class="card-body">
 						<form action="parkingInfo" method="post" enctype="multipart/form-data" >
@@ -154,46 +154,41 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 				<div class="row">
 							<div class="col-md-6 mt-md-0 mt-3">
 								<input type="text" id="vehicleNo" name="vehicleNo"
-									placeholder="Enter vehicle No." class="form-control shadow required" /> 
-									<span id="vehicleNo"
-									style="color: red;"></span>
-							</div>
-							<div class="col-md-6 mt-md-0 mt-3">
-								<input type="hidden" id="vNo" name="vNo" value="${upDto.vehicleNo}"/> 
-							</div>							
+									placeholder="Enter vehicle No." class="form-control shadow" style="background-color: ghostwhite;" readonly/> 
+							</div>						
 				</div>
 				<br/>
 				<div class="row">
 							<div class="col-md-6 mt-md-0 mt-3">
 							<select name="location"
-									id="location"  class="form-select shadow required"  aria-label="Default select example">
+									id="location" class="form-select shadow required" onclick="enableSubmit()" onchange="ajaxWithObj()" aria-label="Default select example">
 									<option value="">Location</option>
 									<option value="RajajiNagar">RajajiNagar</option>
 									<option value="E.city">E.city</option>
 									<option value="VijayaNagar">VijayaNagar</option>
 									<option value="BTM">BTM</option>
-								</select> <span id="location" style="color: red;"></span>
+								</select>
 							</div>		
 					
 					<div class="col-md-6 mt-md-0 mt-3">
-							<select name="vehicleType" id="vehicleType" class="form-select shadow required " aria-label="Default select example">
+							<select name="vehicleType" id="vehicleType" class="form-select shadow required" onclick="enableSubmit()" onchange="ajaxWithObj()" aria-label="Default select example">
 										<option value="">Vehicle Type</option>
 										<option value="2_Wheeler">2-wheeler</option>
 										<option value="4_Wheeler">4-wheeler</option>
-							</select> <span id="vehicleType" style="color: red;"></span>
+							</select>
 					</div>																					
 				</div>
 				<br/>
 				<div class="row">
 						<div class="col-md-6 mt-md-0 mt-3">
-							<select name="engineType" id="engineType" class="form-select shadow required " aria-label="Default select example">
+							<select name="engineType" id="engineType" class="form-select shadow required" onclick="enableSubmit()" onchange="ajaxWithObj()" aria-label="Default select example">
 										<option value="">Engine Type</option>
 										<option value="Normal">Normal</option>
 										<option value="Electrical">Electrical</option>
-							</select> <span id="engineType" style="color: red;"></span>
+							</select>
 						</div>
 						<div class="col-md-6 mt-md-0 mt-3">
-						<select name="classification" id="classification" class="form-select shadow required " aria-label="Default select example">
+						<select name="classification" id="classification" class="form-select shadow required" onclick="enableSubmit()" onchange="ajaxWithObj()" aria-label="Default select example">
 									<option value="">Classification</option>
 									<optgroup label="Bike">
 										<option value="Bike">Bike</option>
@@ -205,7 +200,7 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 										<option value="Kia">Kia</option>
 										<option value="Toyata">Toyata</option>
 									</optgroup>
-								</select> <span id="classification" style="color: red;"></span>
+								</select>
 							</div>																			
 				</div>
 				<br/>
@@ -213,7 +208,7 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 							<div class="col-md-6 mt-md-0 mt-3">
 								<label for="term">Term:</label>
 								<select name="term" id="term"
-									onchange="ajaxWithObj()" class="form-select shadow required " aria-label="Default select example">
+									onchange="ajaxWithObj()" class="form-select shadow required" onclick="enableSubmit()" aria-label="Default select example">
 									<option value="">select</option>
 									<option value="1_day">1 Day</option>
 									<option value="7_days">7 Days</option>
@@ -222,41 +217,36 @@ document.getElementById("totalAmount").value="${upDto.totalAmount}";
 									<option value="90_days">90 Days</option>
 									<option value="180_days">180 Days</option>
 									<option value="360_days">360 Days</option>
-								</select> <span id="term" style="color: red;"></span>
+								</select>
 							</div>
 							
 							<div class="col-md-6 mt-md-0 mt-3">
 								<label for="price">Price:</label> 
 								<input type="text" id="price" 
 									name="price" class="form-control shadow" style="background-color: ghostwhite;" readonly/> 
-									<span id="price" style="color: red;"></span>
 							</div>
 				</div>
 				<br/>
 				<div class="row">
 							<div class="col-md-6 mt-md-0 mt-3">
 								<label for="discount">Discount(%):</label> <input type="text"
-									id="discount" name="discount" class="form-control shadow" style="background-color: ghostwhite;" readonly/> <span id="discount"
-									style="color: red;"></span>
+									id="discount" name="discount" class="form-control shadow" style="background-color: ghostwhite;" readonly/>
 							</div>
 							<div class="col-md-6 mt-md-0 mt-3">
 								<label for="totalAmount">Total Amount:</label>  
-								<input type="text" id="totalAmount" name="totalAmount" class="form-control shadow" style="background-color: ghostwhite;" readonly/> <span
-									id="totalAmount" style="color: red;"></span>
+								<input type="text" id="totalAmount" name="totalAmount" class="form-control shadow" style="background-color: ghostwhite;" readonly/>
 							</div>
 				</div>
 				<br/>
-				<div class="row" > 
-					<div class="col-md-10 mt-md-0 mt-3">
-						<label for="file">Upload vehicle pic:</label>
-						<input type="file" name="file" id="file" class="form-control shadow" value="hello" style="background-color: ghostwhite;"> 
-						<span id="file" style="color: red;"></span>
-					</div>	
+				<div class="row"> 
 					<div class="col-md-3 mt-md-0 mt-3">
-						<label for="file">Uploaded Pic:</label>
-						<a href="showFile?fileName=${upDto.fileName}&contentType=${upDto.contentType}" target="_blank">
+						<label for="file" style="font-size: 14px;">uploaded</label>
 						<img src="showFile?fileName=${upDto.fileName}&contentType=${upDto.contentType}" width="60" height="50"></a>
-					</div>						
+					</div>				
+					<div class="col-md-8 mt-md-0 mt-3">
+						<label for="file">want to change?</label>
+						<input type="file" name="file" id="file" class="form-control shadow" value="hello" style="background-color: ghostwhite;"> 
+					</div>	
 				</div>
 				<br/>				
 		<div class="row" style="margin-left: 25%;">

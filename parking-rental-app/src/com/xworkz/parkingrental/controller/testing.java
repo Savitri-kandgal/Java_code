@@ -40,6 +40,7 @@ public class testing {
 	}
 }
 
+//${pageContext.request.contextPath}
 //bgd image
 //js validattion
 //space between buttons in landing page

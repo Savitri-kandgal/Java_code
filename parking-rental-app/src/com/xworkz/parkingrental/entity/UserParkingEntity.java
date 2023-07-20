@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name="user_parking_details")
 @NamedQuery(name="findAllByUserId", query = "select aa from UserParkingEntity aa where aa.userId=:uId and aa.isActive=:status")
 @NamedQuery(name="findByVehicleNo", query = "select aa from UserParkingEntity aa where aa.vehicleNo=:vNo")
+@NamedQuery(name="findAllEntities", query = "select aa from UserParkingEntity aa")
 public class UserParkingEntity {
 
 	@Id
@@ -49,6 +50,8 @@ public class UserParkingEntity {
 	private int totalAmount;
 	@Column(name = "FILE_NAME")
 	private String fileName;
+	@Column(name = "PAYMENT")
+	private String payment;
 	@Column(name = "ORIGINAL_FN")
 	private String originalFileName;
 	@Column(name = "CONTENT_TYPE")

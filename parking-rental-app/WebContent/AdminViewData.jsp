@@ -55,7 +55,7 @@ var status=false;
 }
 </script>
 </head>
-<body style="margin-top:5%;margin-bottom: 5%">
+<body style="margin-top:0%;margin-bottom: 5%">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -77,7 +77,7 @@ var status=false;
 <div class="card-body" style="margin-left: 0%;margin-right: 0%;"> <!-- background-color:pink; -->
 	<form name="form" action="viewData" onsubmit="return validateLocation()" class="container center" style="margin-right: 50px;">
 	<span id="lc" style="color:red;margin-left: 25%;font-size: 13px;"></span>
-	<div class="row" style="margin-left: 0%;margin-bottom: 40px;"> <!-- background-color:yellow; -->
+	<div class="row" style="margin-bottom: 40px;margin-left:auto;margin-right:auto;"> <!-- background-color:yellow; -->
 		<div class="col-md-3 mt-md-0 mt-3" style="margin-left: 28%;">
 			<select name="location" id="location" class="form-select shadow required" onkeyup="enableSubmit()" aria-label="Default select example">
 				<option value="">Location</option>
@@ -93,11 +93,11 @@ var status=false;
 	</div>
 	</form>
 	
-<div style="margin-left: 21%;">
+<div style="margin-left: 27%;">
 <b style="color:red;">${error}</b><b style="color:blue;">${size}</b></div>
 <div class="row" style="margin-left: 0%;"></div> <!--background-color:blue;  -->
-<table class="table w-auto table-bordered" style="margin-left: 21%;margin-right: -10%;">
-<thead> <!-- class="table-dark" -->
+<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
+<thead style="text-align: center;font-size: 12px;"> <!-- class="table-dark" -->
 <tr>
 <!-- <th scope="col">#</th> -->
 <th scope="col" style="background-color: turquoise;">Location</th>
@@ -109,7 +109,7 @@ var status=false;
 <th scope="col" style="background-color: turquoise;">Discount</th>
 </tr>
   </thead>
-<tbody style="text-align: center;">
+<tbody style="text-align: center;font-size: 12px;">
 <c:forEach items="${list}" var="dto">
 <tr>
 <!-- <th scope="row"></th> -->

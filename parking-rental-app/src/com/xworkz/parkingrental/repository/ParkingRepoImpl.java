@@ -209,6 +209,23 @@ public class ParkingRepoImpl implements ParkingRepo {
 		}
 	}
 	
+	public boolean updateUserParkingInfo(UserParkingEntity entity) {
+		log.info("running updateUserParkingInfo()");
+		EntityManager manager = factory.createEntityManager();
+		EntityTransaction transaction = manager.getTransaction();
+		try {
+			transaction.begin();
+			manager.merge(entity);
+			transaction.commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			manager.close();
+		}
+	}
+	
 	public boolean deleteUserParkingEntity(String vehicleNo) {
 		log.info("running deleteUserParkingEntity()");
 		boolean flag=true;
@@ -239,5 +256,21 @@ public class ParkingRepoImpl implements ParkingRepo {
 			manager.close();
 		}
 		return false;
+	}
+	
+	
+	public List<UserParkingEntity> findAll() {
+		log.info("running deleteUserParkingEntity()");
+		EntityManager manager = factory.createEntityManager();
+		Query query = manager.createNamedQuery("findAllEntities");
+		try {
+			List<UserParkingEntity> list = query.getResultList();
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		} finally {
+			manager.close();
+		}
 	}
 }

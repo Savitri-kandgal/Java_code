@@ -117,7 +117,7 @@ console.log("btn.disabled: "+btn.disabled);
 			</div>
 			<div class="w3-bar w3-border"
 				style="margin-left: 780px; margin-top: -20px;">
-				<a href="UserLoginSuccess.jsp" class="btn btn-sm"
+				<a href="duePayment?email=${userDto.email}" class="btn btn-sm"
 					style="background-color: turquoise;">Home</a>
 			</div>
 			<div class="navbar-left" class="w3-bar w3-border">

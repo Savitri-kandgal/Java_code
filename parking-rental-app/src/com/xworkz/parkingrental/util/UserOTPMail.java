@@ -58,6 +58,7 @@ public class UserOTPMail {
 				Transport.send(msg);
 			} catch (MessagingException e) {
 				e.printStackTrace();
+				return false;
 			}
 			return true;
 		}

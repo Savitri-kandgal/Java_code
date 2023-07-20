@@ -36,7 +36,7 @@
 }
 </style>
 </head>
-<body Style="margin-top:5%;margin-bottom:5%;margin-left: 3%;">
+<body Style="margin-top:5%;margin-bottom:5%;">
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -47,9 +47,12 @@
 				<img src="Xworkz-Logo.png" class="w3-bar w3-border" width="85"
 					height="40" style="margin-top: -20px">
 			</div>
+			
 			<div class="w3-bar w3-border"
-				style="margin-left: 780px; margin-top: -20px;">
-				<a href="UserLoginSuccess.jsp" class="btn btn-sm"
+				style="margin-left: 700px; margin-top: -20px;">
+				<a href="paymentDue?email=${personalData.email}" class="btn btn-sm"
+					style="background-color: turquoise;">Payment</a>
+				<a href="duePayment?email=${userDto.email}" class="btn btn-sm"
 					style="background-color: turquoise;">Home</a>
 			</div>
 			<div class="navbar-left" class="w3-bar w3-border">
@@ -60,7 +63,7 @@
 	
 <div class="card-body" style="margin-top:-10%;"> <!-- background-color:pink; -->
 	<div class="row">
-	<span style="margin-left:16.2%;color: blue"><b>Profile</b></span>
+	<span style="margin-left:16.6%;color: blue"><b>Profile</b></span>
 		<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
 			<thead style="text-align: center;font-size: 12px;">
 				<tr>
@@ -86,17 +89,17 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="row">
-	<span style="margin-left:-1%;color: blue;"><b>Parking details</b></span>
+	<div class="row" style="margin-left:15px;">
+	<span style="margin-left:-2%;color: blue;"><b>Parking details</b></span>
 	<span style="margin-left:40%;color: red;">${error}</span>
-		<table class="table w-auto table-bordered" style="margin-left:auto;margin-right:auto;">
+		<table class="table w-auto table-bordered" style="margin-left:-14px;">
 			<thead style="text-align: center;font-size: 12px;"> <!-- class="table-dark" -->
 				<tr style="text-align: center;">
 					<th scope="col" style="background-color: turquoise;">Location</th>
 					<th scope="col" style="background-color: turquoise;">Vehicle No.</th>
 					<th scope="col" style="background-color: turquoise;">Vehicle-Type</th>
 					<th scope="col" style="background-color: turquoise;">Engine-Type</th>
-					<th scope="col" style="background-color: turquoise;">Classification</th>
+					<th scope="col" style="background-color: turquoise;">Classi-fication</th>
 					<th scope="col" style="background-color: turquoise;">Term</th>
 					<th scope="col" style="background-color: turquoise;">Price</th>
 					<th scope="col" style="background-color: turquoise;">Discount</th>
@@ -128,7 +131,7 @@
 								<img src="showFile?fileName=${dto.fileName}&contentType=${dto.contentType}" width="60" height="50"></a>
 						</td>
 						<td>
-							<a href="parkinginfo/${dto.vehicleNo}" class="btn btn-sm" style="background-color: turquoise;">Update</a>
+							<a href="${pageContext.request.contextPath}/parkinginfo/byVehicleNo/${dto.vehicleNo}" <%-- href="parkinginfo?vehicleNo=${dto.vehicleNo}" --%> class="btn btn-sm" style="background-color: turquoise;">Update</a>
 						</td>
  						<td>
 							<a href="deleteUserParkingData?vehicleNo=${dto.vehicleNo}" class="btn btn-sm" style="background-color: turquoise;">Delete</a>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.xworkz.parkingrental.dto.ParkingInfoDTO;
+import com.xworkz.parkingrental.dto.UserDTO;
 import com.xworkz.parkingrental.dto.UserParkingDTO;
 import com.xworkz.parkingrental.service.ParkingService;
 
@@ -65,12 +66,9 @@ public class ParkingAjaxController {
 		return null;
 	}
 	
-	private String email;
 	@GetMapping(value = "/validateEmailForOPT/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String validateEmailForOPT(@PathVariable String email) {
 		log.info("running validateEmailForOPT()");
-		this.email=email;
-		log.info("Ajax controller: validateEmailForOPT: this.email: "+this.email);
 		log.info("Ajax Controller: validateEmailForOPT: Email: "+email);
 		boolean exist = service.isUserExist(email);
 		if (exist) {
@@ -82,13 +80,14 @@ public class ParkingAjaxController {
 		}
 	}
 	
-//	@GetMapping(value = "/validateOTP/{email}/{otp}", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public String validateOTP(@PathVariable String email, @PathVariable int otp) {
-	@PostMapping(value = "/validateOTP/{otp}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String validateOTP(@PathVariable int otp) {
-		log.info("running validateOTP()");
-		boolean exist = service.validateOTP(email, otp);
-		if (exist) {
+	@PostMapping(value = "/validateOTP/{email}/{otp}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String validateOTP(@PathVariable String email, @PathVariable int otp) {
+//	@PostMapping(value = "/validateOTP/{otp}", produces = MediaType.APPLICATION_JSON_VALUE)
+//	public String validateOTP(@PathVariable int otp) {
+		log.info("AjaxController: running validateOTP()");
+		log.info("AjaxController: running validateOTP(): email & otp from UI: "+email+", "+otp);
+		UserDTO dto = service.findByUserEmail(email);
+		if (dto.getOtp().equals(otp)) {
 			return "";
 		}
 		return "*Invalid OTP";

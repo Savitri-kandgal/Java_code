@@ -56,7 +56,8 @@
 </nav>
 <div> 
 <button class="btn" type="submit" onclick="window.location.href='onStart';" style="background-color: turquoise;color:black;position:absolute; top:15%; left:1%;">Update Parking Info</button>
-<button class="btn" type="submit" onclick="window.location.href='AdminViewData.jsp';" style="background-color: turquoise;color:black;position:absolute; top:25%; left:1%;">View Data</button>
+<button class="btn" type="submit" onclick="window.location.href='AdminViewData.jsp';" style="background-color: turquoise;color:black;position:absolute; top:25%; left:1%;">View Parking Info</button>
+<button class="btn" type="submit" onclick="window.location.href='userParkingInfo';" style="background-color: turquoise;color:black;position:absolute; top:35%; left:1%;">View UserParking Info</button>
 </div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

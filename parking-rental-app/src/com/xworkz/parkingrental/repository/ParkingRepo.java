@@ -2,6 +2,8 @@ package com.xworkz.parkingrental.repository;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.xworkz.parkingrental.dto.UserParkingDTO;
 import com.xworkz.parkingrental.entity.ParkingEntity;
 import com.xworkz.parkingrental.entity.ParkingInfoEntity;
 import com.xworkz.parkingrental.entity.UserEntity;
@@ -46,6 +48,7 @@ public interface ParkingRepo {
 	default boolean saveUserParkingInfo(UserParkingEntity entity) {
 		return false;
 	}
+
 	
 	default boolean updateUserEntity(UserEntity entity) {
 		return false;
@@ -59,7 +62,15 @@ public interface ParkingRepo {
 		return null;
 	}
 	
+	default boolean updateUserParkingInfo(UserParkingEntity entity) {
+		return false;
+	}
+	
 	default boolean deleteUserParkingEntity(String vehicleNo) {
 		return false;
+	}
+	
+	default List<UserParkingEntity> findAll(){
+		return Collections.emptyList();
 	}
 }

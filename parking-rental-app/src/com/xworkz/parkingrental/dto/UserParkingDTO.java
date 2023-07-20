@@ -27,6 +27,7 @@ public class UserParkingDTO implements Serializable, Comparable<UserParkingDTO>{
 	private int price;
 	private int discount;
 	private int totalAmount;
+	private String payment;
 	private String fileName;
 	private String originalFileName;
 	private String contentType;

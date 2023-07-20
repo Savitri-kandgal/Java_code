@@ -35,6 +35,19 @@
 }
 </style>
 <script>
+function validateEmailField(){
+	console.log("validateEmailField() logged-in");
+	var email=document.getElementById("email").value;
+	if (email.trim() === "" || email === null){
+		console.log("email field is empty");	
+		document.getElementById("emailDisplay").innerHTML="*Please generate otp";
+		return false;
+	}
+	document.getElementById("emailDisplay").innerHTML="";
+	return true;
+}
+</script>
+<script>
 function enableSubmit(){
 	console.log("enableSubmit() logged-in");
 let input = document.getElementById('email'); // Enter your class name for a required field, this should also be reflected within your form fields.
@@ -94,8 +107,14 @@ xmlHttp.onload=function(){
 function OTPAjax(){
 console.log("OTPAjax logged-in");
 var otp=document.getElementById("otp").value;
-//var url="http://localhost:8080/parking-rental-app/validateOTP/"+email+"/"+otp;
-var url="http://localhost:8080/parking-rental-app/validateOTP/"+otp;
+var email=document.getElementById("email").value;
+if (email.trim() === "" || email === null){
+	console.log("email field is empty");	
+	document.getElementById("emailDisplay").innerHTML="*Please generate otp";
+	return false;
+}
+var url="http://localhost:8080/parking-rental-app/validateOTP/"+email+"/"+otp;
+//var url="http://localhost:8080/parking-rental-app/validateOTP/"+otp;
 console.log(url);
 const xmlHttp=new XMLHttpRequest();
 xmlHttp.open("POST", url);
@@ -189,7 +208,7 @@ xmlHttp.onload=function(){
 <form action="generateOTPAndLogin" method="post" class="container center" style="margin-right: 50px">
 <span style="color:red;font-size: 12px;" id="emailDisplay">${emailError}</span> 
 						<div class="row">
-							<div class="col-md-7 mt-md-0 mt-3"> 
+							<div class="col-md-7 mt-md-0 mt-3" > 
 								<input type="text"  class="form-control shadow" onkeyup="enableSubmit()" id="email" name="email" value="${mail}" placeholder="Enter email address" onchange="EmailAjax()"/>
 								<span id="email" style="color:red;"></span>
 							</div>
@@ -200,7 +219,7 @@ xmlHttp.onload=function(){
 <br/><span style="color:red;font-size: 12px;" id="OtpDisplay">${otpError}</span>
 						<div class="row">
 							<div class="col-md-7 mt-md-0 mt-3"> 
-								<input type="text" class="form-control shadow" id="otp" name="otp" onkeyup="enableOTPSubmit()" placeholder="Enter OTP" onchange="OTPAjax()"/>
+								<input type="text" class="form-control shadow" id="otp" name="otp" onclick="validateEmailField()"  onkeyup="enableOTPSubmit()" placeholder="Enter OTP" onchange="OTPAjax()"/>
 								<span id="otp" style="color:red;"></span>
 							</div>
 							<div class="col-md-4 mt-md-0 mt-2">
