@@ -1,5 +1,6 @@
 package com.xworkz.parkingrental.service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -24,12 +25,12 @@ import com.xworkz.parkingrental.entity.UserParkingEntity;
 import com.xworkz.parkingrental.repository.ParkingRepo;
 import com.xworkz.parkingrental.util.DateDifference;
 import com.xworkz.parkingrental.util.GenerateOTP;
+import com.xworkz.parkingrental.util.OtpEncryptAndDecrypt;
 import com.xworkz.parkingrental.util.ParkingEmail;
 import com.xworkz.parkingrental.util.UserOTPMail;
 import com.xworkz.parkingrental.util.UserParkingEmail;
 
 import lombok.extern.slf4j.Slf4j;
-
 @Service
 @Slf4j
 public class ParkingServiceImpl implements ParkingService {
@@ -157,7 +158,7 @@ public class ParkingServiceImpl implements ParkingService {
 			userDto.setCreatedDate(formattedDate);
 			userDto.setUpdatedBy(userDto.getName());
 			userDto.setUpdatedDate(formattedDate);
-			userDto.setOtp(0);
+		//	userDto.setOtp(null);
 			userDto.setOtpCount(0);
 			userDto.setAcctStatus("Active");
 			
@@ -184,7 +185,7 @@ public class ParkingServiceImpl implements ParkingService {
 		return false;
 	}
 
-	public boolean generateOtp(String email) 
+	public boolean generateOtp(String email) throws IOException 
 	{
 		log.info("running generateOtp()");
 		int otp = GenerateOTP.generateOtp(); // generated otp
@@ -193,9 +194,11 @@ public class ParkingServiceImpl implements ParkingService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
 		String formattedDate = dateFormat.format(new Date());
 		log.info("service: generateOtp: formattedDate: " + formattedDate);
-		
 		UserEntity entity = repo.findByUserEmail(email);
 		entity.setUpdatedDate(formattedDate);
+	//	String encryptedOtp = OtpEncryptAndDecrypt.enryptOtp(otp);
+//		log.info("service: generateOtp: encryptedOtp: " + encryptedOtp);
+//		entity.setOtp(encryptedOtp);
 		entity.setOtp(otp);
 		entity.setOtpCount(0);
 		entity.setAcctStatus("Active");

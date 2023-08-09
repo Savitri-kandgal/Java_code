@@ -1,5 +1,6 @@
 package com.xworkz.parkingrental.service;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public interface ParkingService {
 		return false;
 	}
 	
-	default boolean generateOtp(String email) {
+	default boolean generateOtp(String email) throws IOException {
 		return false;
 	}
 	

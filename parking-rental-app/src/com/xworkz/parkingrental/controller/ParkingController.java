@@ -137,7 +137,7 @@ public class ParkingController {
 
 	@PostMapping("generateOTPAndLogin")
 	public String onGenerateOTPAndLogin(String email, String generateOtp, Integer otp, String login, Model model,
-			HttpServletRequest req) {
+			HttpServletRequest req) throws IOException {
 
 		log.info("running onGenerateOTPAndLogin()");
 		log.info("Controller: generateOtp: " + generateOtp);
@@ -178,7 +178,7 @@ public class ParkingController {
 				log.info("Is OTP active? " + otpNotExpired);
 				if (otpNotExpired) {
 					log.info("OTP not expired");
-					boolean isOtpValid = service.validateOTP(email, otp);
+					boolean isOtpValid = service.validateOTP(email, otp);  //validateOTP(email, otp);
 					UserDTO recentDto = service.findByUserEmail(email);
 					if (isOtpValid) {
 						log.info("controller: onGenerateOTP():  valid otp");
@@ -311,19 +311,20 @@ public class ParkingController {
 		outputStream.flush();
 	}
 	
-		@RequestMapping(value ="/parkinginfo/byVehicleNo/{vehicleNo}") 
-		//@GetMapping("/parkinginfo")
-		public RedirectView loadingUserParkingData(@PathVariable String vehicleNo, Model model, MultipartFile file, HttpServletRequest req) {
+	//	@RequestMapping(value ="/parkinginfo/byVehicleNo/{vehicleNo}") 
+		@GetMapping("/parkinginfo")
+		public String loadingUserParkingData(String vehicleNo, Model model, MultipartFile file, HttpServletRequest req) {
+	//	public RedirectView loadingUserParkingData(@PathVariable String vehicleNo, Model model, MultipartFile file, HttpServletRequest req) {
 		log.info("running loadingUserParkingData()");
 		log.info("controller: loadingUserParkingData(): vehicleNo: "+vehicleNo);
 		UserParkingDTO upDto = service.findByVehicleNo(vehicleNo);
 		log.info("controller: loadingUserParkingData(): upDto: "+upDto);
 			model.addAttribute("upDto", upDto);
 			log.info("req.getContextPath(): "+req.getContextPath());
-			RedirectView redirectView=new RedirectView();
-			redirectView.setUrl(req.getContextPath()+ "/UpdateUserParkingInfo.jsp");
-		//	return "UpdateUserParkingInfo";
-			return redirectView;
+		//	RedirectView redirectView=new RedirectView();
+		//	redirectView.setUrl(req.getContextPath()+ "/UpdateUserParkingInfo.jsp");
+			return "UpdateUserParkingInfo";
+		//	return redirectView;
 	}
 	
 	@PostMapping("parkingInfo")
