@@ -1,9 +1,5 @@
 package com.xworkz.parkingrental.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -11,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 
 public class testing {
 
@@ -83,23 +78,46 @@ public class testing {
 
 		System.out.println("smallest and largest number of array");
 
-		int[] n = { 56, 28, 78, 46, 10, 39, 56};
+		int[] n = { 56, 28, 78, 46, 10, 39, 56 };
 
 		int min = n[0];
 		int max = n[0];
 		for (int i = 1; i < n.length; i++) {
-			System.out.println("min: "+min+ " & max: "+max);
+			System.out.println("min: " + min + " & max: " + max);
 			if (n[i] < min) {
 				min = n[i];
 			} else if (n[i] > max) {
 				max = n[i];
 			}
 		}
-		System.out.println("min: "+min+ " & max: "+max);
+		System.out.println("min: " + min + " & max: " + max);
+
+		// reverse of string
+		String name = "Savitri";
+
+		String reverseString = "";
+		char[] ch = name.toCharArray();
+		for (int i = ch.length - 1; i >= 0; i--) {
+			reverseString += ch[i];
+		}
+
+		System.out.println("reverseString: " + reverseString);
+
+		// reverse of sentence
+		String fullName = "Savitri Kandgal";
+
+		String reverseName = "";
+		String[] strArray = fullName.split(" ");
+		for (int i = strArray.length - 1; i >= 0; i--) {
+			reverseName += strArray[i];
+			for (int j = strArray.length - 2; j >= 0; j--) {
+				reverseName += " ";
+			}
+		}
+		System.out.println("reverseName: " + reverseName);
+
 	}
 
-	
-	
 //	static String encryptedOtp = null;
 	static byte[] bytes = null;
 
